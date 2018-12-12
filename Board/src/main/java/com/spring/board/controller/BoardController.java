@@ -81,7 +81,7 @@ public class BoardController {
 		} else {
 			responseMap.put("message","비밀번호가 누락되었습니다.");
 			logger.info("Crypto value is null");
-			return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+			return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		BoardEntity entity = requestData.toEntity();
