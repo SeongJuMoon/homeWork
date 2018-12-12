@@ -2,7 +2,6 @@ package com.spring.board.controller;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -33,6 +32,7 @@ public class BoardController {
 
 	private BoardService boardService;
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	private static final int rowPerPage = 10;
 	
 	public BoardController(BoardService boardService) {
 		this.boardService = boardService;
@@ -40,7 +40,6 @@ public class BoardController {
 	
 	@RequestMapping(value="/board/allView.vw/{page}")
 	public Page<BoardListViewEnetity> getAllList(@PathVariable(name="page") Integer page) {
-		int rowPerPage = 10;
 		PageRequest request = PageRequest.of(page -1, rowPerPage, Sort.Direction.DESC, "regTime");
 		return boardService.getPageView(request);
 	}
@@ -56,8 +55,8 @@ public class BoardController {
 		if(entityWrapper.isPresent()) {
 			return new ResponseEntity<BoardEntity>(entityWrapper.get(),HttpStatus.OK);
 		}else {
-			responseMap.put("message", "¿äÃ»ÇÏ½Å °Ô½Ã¹°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.");
-			return new ResponseEntity<HashMap>(responseMap,HttpStatus.OK);
+			responseMap.put("message", "ìš”ì²­í•˜ì‹  ê²Œì‹œë¬¼ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+			return new ResponseEntity<HashMap>(responseMap,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
@@ -80,7 +79,7 @@ public class BoardController {
 		if(encPassword != null) {
 			requestData.setPassword(encPassword);
 		} else {
-			responseMap.put("message","ºñ¹Ğ¹øÈ£°¡ ´©¶ôµÇ¾ú½À´Ï´Ù.");
+			responseMap.put("message","ë¹„ë°€ë²ˆí˜¸ê°€ ëˆ„ë½ë˜ì—ˆìŠµë‹ˆë‹¤.");
 			logger.info("Crypto value is null");
 			return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
 		}
@@ -91,20 +90,20 @@ public class BoardController {
 			boolean isExecute = boardService.insertEntity(entity);
 			
 			if(isExecute) {
-				responseMap.put("message", "Á¤»óÀûÀ¸·Î µî·ÏµÇ¾ú½À´Ï´Ù.");
+				responseMap.put("message", "ì •ìƒì ìœ¼ë¡œ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
 			} else {
-				responseMap.put("message", "°°Àº °Ô½Ã¹° ³Ñ¹ö·Î µî·ÏµÈ °ÍÀÌ ÀÖ½À´Ï´Ù.\n ´Ù½ÃÇÑ¹ø ½ÃµµÇØÁÖ¼¼¿ä");
+				responseMap.put("message", "ê°™ì€ ê²Œì‹œë¬¼ ë²ˆí˜¸ë¡œ ë“±ë¡ëœ ê²Œì‹œë¬¼ì´ ìˆìŠµë‹ˆë‹¤. \n ë‹¤ì‹œ í•œë²ˆ ì‹œë„í•´ ì£¼ì„¸ìš”");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
-			responseMap.put("message", "ÀÏ½ÃÀûÀÎ ¼­¹ö ¿À·ùÀÔ´Ï´Ù. \n ´Ù½Ã ÇÑ¹ø ½ÃµµÇØÁÖ½Ã°Å³ª ¿î¿µÀÚ¿¡°Ô ¿¬¶ô ºÎÅ¹µå¸®°Ú½À´Ï´Ù. ¡Ø arcuer.dev@gmail.com");
+			responseMap.put("message", "ì¼ì‹œì ì¸ ì„œë²„ ì˜¤ë¥˜ì…ë‹ˆë‹¤. \n ë‹¤ì‹œ í•œë²ˆ ì‹œë„í•´ì£¼ì‹œê±°ë‚˜ ìš´ì˜ìì—ê²Œ ì—°ë½ ë¶€íƒë“œë¦¬ê² ìŠµë‹ˆë‹¤.\nâ€» arcuer.dev@gmail.com");
 			return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@RequestMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, value = "/board/boardDataManage.do", method = RequestMethod.PUT )
-	public ResponseEntity updateData(@RequestBody BoardEntityGenerator requestData) {
+	public ResponseEntity<?> updateData(@RequestBody BoardEntityGenerator requestData) {
 		HashMap<String, String> responseMap = new HashMap<>();	
 		String encPassword = CryptitUtil.encryptSha(requestData.getPassword());
 		
@@ -113,11 +112,12 @@ public class BoardController {
 		if(encPassword != null) {
 			requestData.setPassword(encPassword);
 		} else {
-			responseMap.put("message","ºñ¹Ğ¹øÈ£°¡ ´©¶ôµÇ¾ú½À´Ï´Ù.");
+			responseMap.put("message","ë¹„ë°€ë²ˆí˜¸ê°€ ëˆ„ë½ë˜ì—ˆìŠµë‹ˆë‹¤.");
+			logger.info("Crypto value is null");
 			return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		// update time Ãß°¡
+		// update time set
 		requestData.setUptTime(clientRequestTime);
 		logger.info("Request Entity : "  + requestData.toString());
 		
@@ -127,16 +127,16 @@ public class BoardController {
 			boolean isExecute = boardService.updateEntity(entity);
 			
 			if(isExecute) {
-				responseMap.put("message", "Á¤»óÀûÀ¸·Î ¼öÁ¤µÇ¾ú½À´Ï´Ù.");
+				responseMap.put("message", "ì •ìƒì ìœ¼ë¡œ ìˆ˜ì •ë˜ì—ˆìŠµë‹ˆë‹¤.");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
 			} else {
 				logger.info("FAIL  :  NOT FOUND AT TABLE UUID : " + entity.getBoardUuid());
-				responseMap.put("message", "°Ô½ÃÆÇ ¹øÈ£¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. \n ÀÌ¹Ì »èÁ¦µÇ¾ú´ÂÁö È®ÀÎÇØÁÖ¼¼¿ä.");
+				responseMap.put("message", "ê²Œì‹œíŒì„ ìˆ˜ì •í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n ì´ë¯¸ ì‚­ì œëœ ê²Œì‹œë¬¼ì´ê±°ë‚˜ ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë¦½ë‹ˆë‹¤.");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.info(e.getMessage() + e.getCause());
-			responseMap.put("message", "ÀÏ½ÃÀûÀÎ ¼­¹ö ¿À·ù ÀÔ´Ï´Ù.");
+			responseMap.put("message", "ì¼ì‹œì ì¸ ì„œë²„ ì˜¤ë¥˜ì…ë‹ˆë‹¤. \n ë‹¤ì‹œ í•œë²ˆ ì‹œë„í•´ì£¼ì‹œê±°ë‚˜ ìš´ì˜ìì—ê²Œ ì—°ë½ ë¶€íƒë“œë¦¬ê² ìŠµë‹ˆë‹¤.\nâ€» arcuer.dev@gmail.com");
 			return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -150,22 +150,23 @@ public class BoardController {
 			if(encPassword != null) {
 				requestData.setPassword(encPassword);
 			} else {
-				responseMap.put("message","ºñ¹Ğ¹øÈ£°¡ ´©¶ôµÇ¾ú½À´Ï´Ù.");
-				return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+				responseMap.put("message","ë¹„ë°€ë²ˆí˜¸ê°€ ëˆ„ë½ë˜ì—ˆìŠµë‹ˆë‹¤.");
+				logger.info("Crypto value is null");
+				return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			
 			boolean isExecute = boardService.deleteEntityByUuidAndPassword(requestData);
 			
 			if(isExecute) {
-				responseMap.put("message", "Á¤»óÀûÀ¸·Î »èÁ¦ Ã³¸®µÇ¾ú½À´Ï´Ù.");
+				responseMap.put("message", "ì •ìƒì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
 			} else {
-				responseMap.put("message", "»èÁ¦¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù.\nºñ¹Ğ¹øÈ£¸¦ ´Ù½ÃÇÑ¹ø È®ÀÎÇØÁÖ¼¼¿ä");
+				responseMap.put("message", "ê²Œì‹œíŒì„ ì‚­ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n ì´ë¯¸ ì‚­ì œëœ ê²Œì‹œë¬¼ì´ê±°ë‚˜ ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë¦½ë‹ˆë‹¤.");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
 			logger.info(e.getMessage() + e.getCause());
-			responseMap.put("message", "ÀÏ½ÃÀûÀÎ ¼­¹ö ¿À·ù ÀÔ´Ï´Ù.");
+			responseMap.put("message", "ì¼ì‹œì ì¸ ì„œë²„ ì˜¤ë¥˜ì…ë‹ˆë‹¤. \n ë‹¤ì‹œ í•œë²ˆ ì‹œë„í•´ì£¼ì‹œê±°ë‚˜ ìš´ì˜ìì—ê²Œ ì—°ë½ ë¶€íƒë“œë¦¬ê² ìŠµë‹ˆë‹¤.\nâ€» arcuer.dev@gmail.com");
 			return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

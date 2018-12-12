@@ -109,14 +109,12 @@ function bindEvents(){
 				
 				menuSwitching('view');
 				
-				console.log(content);
-				
 				$(".modal-date-block").removeAttr('style');
-				$(".modal-titles").text(content.title).css('border','none');
+				$(".modal-titles").text(content.title).css('border','none').attr('readonly','readonly');
 				$(".modal-upttime").text(`등록일 : ${content.uptTime.replace('T',' ')}`).css('text-align','right');
 				$(".modal-regtime").text(`수정일 : ${content.regTime.replace('T',' ')}`).css('text-align','right');
-				$("#modal-author").val(content.userName).css('border','none');
-				$(".modal-contents").text(content.content).css('border','none');
+				$("#modal-author").val(content.userName).css('border','none').attr('readonly','readonly');
+				$(".modal-contents").text(content.content).css('border','none').attr('readonly','readonly');
 			},
 			error : function(response) {
 				alert(response);
@@ -143,7 +141,6 @@ function bindEvents(){
 			data : JSON.stringify(requestData),
 			success : function(response){
 				let serverMessage = response;
-				console.log(serverMessage);
 				alert(serverMessage.message);
 				window.location.reload();
 			},
@@ -180,14 +177,13 @@ function bindEvents(){
 	
 	$(document).on('click',"#addPost", function(){
 		$("#postView").modal('toggle');
-		
 		menuSwitching('add');
 		
 		$(".modal-date-block").css('display','none');
 		
-		$(".modal-titles").val('').removeAttr('style');
-		$(".modal-contents").val('').removeAttr('style');
-		$("#modal-author").val('').removeAttr('style');
+		$(".modal-titles").val('').removeAttr('style').removeAttr('readonly');
+		$(".modal-contents").val('').removeAttr('style').removeAttr('readonly');
+		$("#modal-author").val('').removeAttr('style').removeAttr('readonly');
 	});
 	
 	$(document).on('click','.btn.btn-danger.btn-link',function(){

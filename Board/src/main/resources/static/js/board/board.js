@@ -110,11 +110,11 @@ function bindEvents(){
 				menuSwitching('view');
 				
 				$(".modal-date-block").removeAttr('style');
-				$(".modal-titles").text(content.title).css('border','none');
+				$(".modal-titles").val(content.title).css('border','none').attr('readonly','readonly');
 				$(".modal-upttime").text(`등록일 : ${content.uptTime.replace('T',' ')}`).css('text-align','right');
 				$(".modal-regtime").text(`수정일 : ${content.regTime.replace('T',' ')}`).css('text-align','right');
-				$("#modal-author").val(content.userName).css('border','none');
-				$(".modal-contents").text(content.content).css('border','none');
+				$("#modal-author").val(content.userName).css('border','none').attr('readonly','readonly');
+				$(".modal-contents").val(content.content).css('border','none').attr('readonly','readonly');
 			},
 			error : function(response) {
 				alert(response);
@@ -123,7 +123,13 @@ function bindEvents(){
 	});
 	
 	$(document).on('click',"#savePassword",function(){
+		
 		window.confirmPassword = $("#password").val();
+		
+		if(Boolean(window.confirmPassword) === false ){
+			alert('비밀번호를 입력해주세요');
+			return false;
+		}
 		
 		let method = $(this).attr('proctype');
 		let requestData = {'boardUuid' : window.boardUuid, 'password' : window.confirmPassword};
@@ -159,11 +165,22 @@ function bindEvents(){
 	});
 	
 	$(document).on('click',"#updatePost",function(){
+		if(verificationParams() === false) {
+			alert('게시글의 제목,내용,작성자를 빠짐 없이 입력해주세요.');
+			return false;
+		}
+		
 		$("#passwordModal").modal('toggle');
 		$("#savePassword").attr('proctype','PUT');
 	});
 	
 	$(document).on('click',"#insertPost", function(){
+		
+		if(verificationParams() === false) {
+			alert('게시글의 제목,내용,작성자를 빠짐 없이 입력해주세요.');
+			return false;
+		}
+		
 		$("#passwordModal").modal('toggle');
 		$("#savePassword").attr('proctype','POST');
 	});
@@ -177,17 +194,20 @@ function bindEvents(){
 	
 	$(document).on('click',"#addPost", function(){
 		$("#postView").modal('toggle');
-		
 		menuSwitching('add');
 		
 		$(".modal-date-block").css('display','none');
 		
-		$(".modal-titles").val('').removeAttr('style');
-		$(".modal-contents").val('').removeAttr('style');
-		$("#modal-author").val('').removeAttr('style');
+		$(".modal-titles").val('').removeAttr('style').removeAttr('readonly');
+		$(".modal-contents").val('').removeAttr('style').removeAttr('readonly');
+		$("#modal-author").val('').removeAttr('style').removeAttr('readonly');
 	});
 	
 	$(document).on('click','.btn.btn-danger.btn-link',function(){
 		initGlobalVariables();
 	});
+}
+
+function verificationParams() {
+	return Boolean($(".modal-titles").val()) && Boolean($(".modal-contents").val()) && Boolean($("#modal-author").val())
 }

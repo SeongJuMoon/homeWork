@@ -5,7 +5,7 @@ spring:
      suffix: .html
 
  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/Shop?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/MYAPP?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: 1234
