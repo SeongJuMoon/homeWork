@@ -109,8 +109,6 @@ function bindEvents(){
 				
 				menuSwitching('view');
 				
-				console.log(content);
-				
 				$(".modal-date-block").removeAttr('style');
 				$(".modal-titles").text(content.title).css('border','none');
 				$(".modal-upttime").text(`등록일 : ${content.uptTime.replace('T',' ')}`).css('text-align','right');
@@ -143,13 +141,13 @@ function bindEvents(){
 			data : JSON.stringify(requestData),
 			success : function(response){
 				let serverMessage = response;
-				console.log(serverMessage);
 				alert(serverMessage.message);
 				window.location.reload();
 			},
 			error : function(response){
 				let serverMessage = response.responseJSON;
-				console.log(serverMessage.message);
+				alert(serverMessage.message);
+				$("#password").val('');
 			}
 		})
 		

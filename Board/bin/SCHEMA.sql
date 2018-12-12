@@ -1,1 +1,1 @@
-create schema Board;
+create schema MYAPP;

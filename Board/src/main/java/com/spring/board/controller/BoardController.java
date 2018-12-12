@@ -160,7 +160,7 @@ public class BoardController {
 				responseMap.put("message", "정상적으로 삭제 처리되었습니다.");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
 			} else {
-				responseMap.put("message", "삭제에 실패하였습니다.\n다시 시도해주세요");
+				responseMap.put("message", "삭제에 실패하였습니다.\n비밀번호를 다시한번 확인해주세요");
 				return new ResponseEntity<HashMap>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} catch (Exception e) {
