@@ -1,0 +1,25 @@
+spring:
+ mvc:
+    view:
+     prefix: /
+     suffix: .html
+
+ datasource:
+    url: jdbc:mysql://127.0.0.1:3306/Shop?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 1234
+
+ jpa:
+    generate-ddl: true
+    show-sql: true
+    database: mysql
+
+server:
+  port: 10004
+  servlet:
+    session:
+      timeout: 10
+  tomcat:
+    uri-encoding: UTF-8
+    
