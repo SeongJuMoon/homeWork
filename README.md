@@ -59,7 +59,7 @@ OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
 ~~~
 
 # 3.실행 커맨드 (Spring boot Applcation Running Command)
-java -jar -server --Xms 512m -Xmx 1024m Board-0.0.1-SNAPSHOT.jar >> boot.log
+java -jar -server -Xms512m -Xmx1024m -Dfile.encodng=UTF-8 Board-0.0.1-SNAPSHOT.jar >> boot.log
 
 # 4.접속 URL
 http://localhost:10004
