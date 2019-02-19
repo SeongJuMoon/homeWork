@@ -1,4 +1,4 @@
-# homeWork 프로젝트 설명
+# spring-boot-board-app 프로젝트 설명
 ## 본 레포지토리는 Spring Boot 2.0.5 RELEASE + SPRING - DATA - JPA + BootStrap를 이용하여 만든 간단한 익명 게시판입니다.
  
 ## 본 프로젝트에서는 MySQL을 이용하여 진행하였습니다.
